@@ -104,12 +104,31 @@ function __show_batch_download_ui__(videos, title) {
   ui.id = 'wx-batch-download-ui';
   ui.style.cssText = 'position:fixed;top:60px;right:20px;background:#2b2b2b;color:#e5e5e5;padding:0;border-radius:8px;z-index:99999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:14px;width:450px;max-height:80vh;box-shadow:0 8px 24px rgba(0,0,0,0.5);overflow:hidden;';
   
+  // 统计视频和直播数量
+  var videoCount = 0;
+  var liveCount = 0;
+  videos.forEach(function(v) {
+    if (v.type === 'live') {
+      liveCount++;
+    } else if (v.type === 'media' || !v.type) {
+      videoCount++;
+    }
+  });
+  
+  // 构建统计文本
+  var statsText = '';
+  if (liveCount > 0) {
+    statsText = videoCount + ' 个动态, ' + liveCount + ' 个直播';
+  } else {
+    statsText = videos.length + ' 个';
+  }
+  
   ui.innerHTML = 
     // 标题栏
     '<div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;">' +
       '<div style="font-size:15px;font-weight:500;color:#fff;">' + __wx_batch_download_manager__.title + '</div>' +
       '<div style="display:flex;align-items:center;gap:12px;">' +
-        '<div id="batch-total-count" style="font-size:13px;color:#999;">' + videos.length + ' 个</div>' +
+        '<div id="batch-total-count" style="font-size:13px;color:#999;">' + statsText + '</div>' +
         '<div id="batch-close-icon" style="cursor:pointer;color:#999;font-size:20px;line-height:1;padding:4px;" title="关闭">×</div>' +
       '</div>' +
     '</div>' +
@@ -359,10 +378,28 @@ function __update_batch_download_ui__(videos, title) {
     __wx_batch_download_manager__.title = title;
   }
   
+  // 统计视频和直播数量
+  var allVideos = __wx_batch_download_manager__.videos;
+  var videoCount = 0;
+  var liveCount = 0;
+  allVideos.forEach(function(v) {
+    if (v.type === 'live') {
+      liveCount++;
+    } else if (v.type === 'media' || !v.type) {
+      videoCount++;
+    }
+  });
+  
   // 更新总数
   var countElement = document.getElementById('batch-total-count');
   if (countElement) {
-    countElement.textContent = __wx_batch_download_manager__.videos.length + ' 个';
+    var statsText = '';
+    if (liveCount > 0) {
+      statsText = videoCount + ' 个动态, ' + liveCount + ' 个直播';
+    } else {
+      statsText = allVideos.length + ' 个';
+    }
+    countElement.textContent = statsText;
   }
   
   // 重新渲染列表
