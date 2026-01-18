@@ -108,7 +108,7 @@ function __show_batch_download_ui__(videos, title) {
   var videoCount = 0;
   var liveCount = 0;
   videos.forEach(function(v) {
-    if (v.type === 'live') {
+    if (v.type === 'live' || v.type === 'live_replay') {
       liveCount++;
     } else if (v.type === 'media' || !v.type) {
       videoCount++;
@@ -408,7 +408,7 @@ function __update_batch_download_ui__(videos, title) {
   var videoCount = 0;
   var liveCount = 0;
   allVideos.forEach(function(v) {
-    if (v.type === 'live') {
+    if (v.type === 'live' || v.type === 'live_replay') {
       liveCount++;
     } else if (v.type === 'media' || !v.type) {
       videoCount++;
